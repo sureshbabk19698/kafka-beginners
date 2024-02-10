@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.sk.config.KafkaConfig;
+import org.sk.config.KafkaTopic;
 import org.sk.producer.ProducerDemoWithoutKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class ConsumerDemo {
         var props = KafkaConfig.setUpConsumer(args[0].split("=")[1]);
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(List.of("third-topic"));
+        consumer.subscribe(List.of(KafkaTopic.THIRD_TOPIC));
 
         while (true) {
             log.info("Polling..");
@@ -29,7 +30,6 @@ public class ConsumerDemo {
             for (ConsumerRecord<String, String> record : records) {
                 log.info("Topic: {}, Partition: {}, Key: {}, Value: {}", record.topic(), record.partition(), record.key(), record.value());
             }
-
         }
     }
 
