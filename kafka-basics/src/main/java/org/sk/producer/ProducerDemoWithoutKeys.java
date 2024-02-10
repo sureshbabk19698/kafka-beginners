@@ -25,7 +25,6 @@ public class ProducerDemoWithoutKeys {
                 ProducerRecord<String, String> pr = new ProducerRecord<>(KafkaTopic.THIRD_TOPIC, "Its 2024, I made it." + i);
                 producer.send(pr, (RecordMetadata metadata, Exception exception) -> log.info("Partition {} ", metadata.partition()));
             }
-//            Thread.sleep(1000);
         }
         producer.flush();
         producer.close();
