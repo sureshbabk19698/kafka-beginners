@@ -14,7 +14,7 @@ public class ProducerDemoWithoutKeys {
 
     private static final Logger log = LoggerFactory.getLogger(ProducerDemoWithoutKeys.class.getSimpleName());
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         args = Objects.isNull(args) ? new String[]{"--env=local"} : args;
         log.info("Inside Kafka Producer Demo");
         var props = KafkaConfig.setUpProducer(args[0].split("=")[1]);
