@@ -6,21 +6,22 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
 
 -----------------------------------------------------------------------------
 ## Producer:
-    # Can have number of partitions and replication factor as desired
+    Can have number of partitions and replication factor as desired
 
-    # Send data to topic - without keys
+    Send data to topic - without keys
         # Without keys - will be assigned to different partitions
         # For datas send without key, the partition will be assigned based on **partitioner.class** property.
           Eg: RoundRobinPartitioner(self explained), StickyPartitioner (batch of records goes to single partition)
 
-    # Send data to topic - with keys
+    Send data to topic - with keys
         # same key will always be assigned to same partition using Murmur2 algorithm or using CustomPartitioner(user created logic)
     
 -----------------------------------------------------------------------------
 
 ## Consumer: 
-    # Can have number of consumer groups and consumers as desired.
-    # Consumers are assigned partitions based on RangeAssignor, CooperativeStickyAssignor, RoundRobinAssignor, etc,
+    Can have number of consumer groups and consumers as desired.
+
+    Consumers are assigned partitions based on RangeAssignor, CooperativeStickyAssignor, RoundRobinAssignor, etc,
       can be dynamically configured via **partition.assignment.strategy** property.
 
     
