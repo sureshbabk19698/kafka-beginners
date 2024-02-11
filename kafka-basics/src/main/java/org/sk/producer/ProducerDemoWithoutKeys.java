@@ -18,6 +18,7 @@ public class ProducerDemoWithoutKeys {
         args = Objects.isNull(args) ? new String[]{"--env=local"} : args;
         log.info("Inside Kafka Producer Demo");
         var props = KafkaConfig.setUpProducer(args[0].split("=")[1]);
+        props.put("batch.size", "2");
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
         for (int j = 1; j <= 3; j++) {
