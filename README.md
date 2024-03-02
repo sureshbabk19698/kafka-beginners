@@ -15,23 +15,36 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
     Note: From Kafka 3.3.1, Zookeeper is not required anymore and Kafka can be started with Kraft.
 -----------------------------------------------------------------------------
 ## Producer:
-    Can have number of partitions and replication factor as desired
-
-    Send data to topic - without keys
+    1. Can have number of partitions and replication factor as desired
+    2. Send data to topic - without keys
         # Without keys - will be assigned to different partitions
         # For datas send without key, the partition will be assigned based on **partitioner.class** property.
           Eg: RoundRobinPartitioner(self explained), StickyPartitioner (batch of records goes to single partition)
-
-    Send data to topic - with keys
-        # same key will always be assigned to same partition using Murmur2 algorithm or using CustomPartitioner(user created logic)
+    3. Send data to topic - with keys
+        # same key will always be assigned to same partition using Murmur2 algorithm or 
+          using CustomPartitioner(user created logic)
     
 -----------------------------------------------------------------------------
 
 ## Consumer: 
-    Can have number of consumer groups and consumers as desired.
-
-    Consumers are assigned partitions based on RangeAssignor, CooperativeStickyAssignor, RoundRobinAssignor, etc,
-      can be dynamically configured via **partition.assignment.strategy** property.
+    1. Consumers are assigned partitions based on RangeAssignor, CooperativeStickyAssignor, RoundRobinAssignor, etc,
+       can be dynamically configured via **partition.assignment.strategy** property.
+    2. If No of Consumers is more than no of partitions then extra cosumers will be inactive(unused).
+        Eg-1:               | Partition 1 |                                 | Consumer 1 | 
+                            | Partition 2 |                                 | Consumer 2 | 
+            Producers -->   | Partition 3 | -->  Consumer Group-1     -->   | Consumer 3 | 
+                            | Partition 4 |                                 | Consumer 4 | 
+                            | Partition 5 |                                 | Consumer 5 | 
+                                                                            | Consumer 6 | --> Inactive  
+    
+    3. Can have number of consumer groups and consumers as desired.
+       Eg-2:                | Partition 1 |                                 | Consumer 1 | 
+                            | Partition 2 |                                 | Consumer 2 | 
+            Producers -->   | Partition 3 | -->  Consumer Group-1     -->   | Consumer 3 | 
+                  |         | Partition 4 |                                 | Consumer 4 | 
+                  |         | Partition 5 |                                 | Consumer 5 | 
+                  |
+                  ---------------------------->  Consumer Group-2     -->   | Consumer 1 |  
 
     
 
