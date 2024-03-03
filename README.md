@@ -12,7 +12,14 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
     2. ~/kafka_2.13-3.6.1/bin/kafka-storage.sh format -t <uuid> -c ~/kafka_2.13-3.6.1/config/kraft/server.properties
     3. ~/kafka_2.13-3.6.1/bin/kafka-server-start.sh ~/kafka_2.13-3.6.1/config/kraft/server.properties
     
-    Note: From Kafka 3.3.1, Zookeeper is not required anymore and Kafka can be started with Kraft.
+    Note: 
+    1. From Kafka 3.3.1, Zookeeper is not required anymore and Kafka can be started with Kraft.
+    2. Everytime after system restart, disable ipv6 in WSL2 Ubuntu using below commands, else below error will occur. Reason, from windows we are connecting to Linux.
+       ERROR: org.apache.kafka.clients.NetworkClient Error connecting to node broker:29092 (id: -1 rack: null) java.net.UnknownHostException: broker: Name or service not known
+        sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+        sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+        
+       
 -----------------------------------------------------------------------------
 ## Producer:
     1. Can have number of partitions and replication factor as desired
