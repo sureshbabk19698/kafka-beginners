@@ -7,7 +7,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.sk.config.KafkaConfig;
 import org.sk.config.KafkaTopic;
-import org.sk.producer.ProducerDemoWithoutKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ConsumerDemoWithCoopertiveStickyAssignor {
-    private static final Logger log = LoggerFactory.getLogger(ProducerDemoWithoutKeys.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(ConsumerDemoWithCoopertiveStickyAssignor.class.getSimpleName());
 
     public static void main(String[] args) {
         args = Objects.nonNull(args) && args.length > 0 ? args : new String[]{"--env=local"};
