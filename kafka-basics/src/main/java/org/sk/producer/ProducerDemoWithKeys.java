@@ -15,7 +15,7 @@ public class ProducerDemoWithKeys {
     private static final Logger log = LoggerFactory.getLogger(ProducerDemoWithKeys.class.getSimpleName());
 
     public static void main(String[] args) {
-        args = Objects.isNull(args) ? new String[]{"--env=local"} : args;
+        args = Objects.nonNull(args) && args.length > 0 ? args : new String[]{"--env=local"};
         log.info("Inside Kafka Producer Demo");
         var props = KafkaConfig.setUpProducer(args[0].split("=")[1]);
 

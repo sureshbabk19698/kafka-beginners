@@ -18,7 +18,7 @@ public class ConsumerDemoWithShutDown {
     private static final Logger log = LoggerFactory.getLogger(ProducerDemoWithoutKeys.class.getSimpleName());
 
     public static void main(String[] args) {
-        args = Objects.isNull(args) ? new String[]{"--env=local"} : args;
+        args = Objects.nonNull(args) && args.length > 0 ? args : new String[]{"--env=local"};
         log.info("Inside Kafka Consumer Demo");
         var props = KafkaConfig.setUpConsumer(args[0].split("=")[1]);
 
