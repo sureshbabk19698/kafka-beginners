@@ -34,14 +34,19 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
 1. Can have number of partitions and replication factor as desired
 2. Send data to topic - without keys 
    1. Without keys - will be assigned to different partitions
-   2. For datas send without key, the partition will be assigned based on **partitioner.class** property.
+   2. For data's send without key, the partition will be assigned based on **partitioner.class** property.
       Eg: RoundRobinPartitioner(self explained), StickyPartitioner (batch of records goes to single partition)
 3. Send data to topic - with keys
    1. same key will always be assigned to same partition using Murmur2 algorithm or 
          using CustomPartitioner(user created logic)
-    
------------------------------------------------------------------------------
 
+### Kafka Producer Properties:
+    acks=-1 or acks=all ==> Ensure data is persisted properly in leader and replicas, No data loss.
+    min.insync.replicas=2 ==> Ensures two brokers in ISR at least have the data after an ack.
+    enable.idempotence=true ==> Duplicates are not introduced due to network retries.
+    reties=Integer.MAX_INT ==> retries until delivery.timeout.ms is reached. Default 2 mins.
+    max.in.flight.requests.per.connection = 5 ==> Ensure maximum performance while keeping message ordering.
+----------------------------------------------------------------------------------------------------
 ## Consumer: 
 1. Consumers are assigned partitions based on RangeAssignor, CooperativeStickyAssignor, RoundRobinAssignor, etc,
    can be dynamically configured via **partition.assignment.strategy** property.
@@ -62,6 +67,5 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
                   |         | Partition 5 |                                 | Consumer 5 | 
                   |
                   ---------------------------->  Consumer Group-2     -->   | Consumer 1 |  
-
+-----------------------------------------------------------------------
     
-
