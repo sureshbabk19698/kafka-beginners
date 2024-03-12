@@ -46,6 +46,15 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
     enable.idempotence=true ==> Duplicates are not introduced due to network retries.
     reties=Integer.MAX_INT ==> retries until delivery.timeout.ms is reached. Default 2 mins.
     max.in.flight.requests.per.connection = 5 ==> Ensure maximum performance while keeping message ordering.
+    
+###  linger.ms and batch.size ==> properties:
+    1. producer will wait till batch.size = (16 * 1024) is reached before sending them, default 16kb  
+       batch.size is per partition
+    2. linger.ms = 0 how long to wait until we send a batch. 
+    3. If  max.in.flight.requests.per.connection = 5, 
+       means 5 message batches are inflight, if requests are incoming, kafka will start batching based on
+       linger.ms and batch.size, when exceed batch.size, automatically sends the data.
+    
 ----------------------------------------------------------------------------------------------------
 ## Consumer: 
 1. Consumers are assigned partitions based on RangeAssignor, CooperativeStickyAssignor, RoundRobinAssignor, etc,
