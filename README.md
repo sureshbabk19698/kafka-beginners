@@ -39,6 +39,7 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
 3. Send data to topic - with keys
    1. same key will always be assigned to same partition using Murmur2 algorithm or 
          using CustomPartitioner(user created logic)
+   2. Note: But if partition is added to a topic, murmur2 algorithm produces different result.
 
 ### Kafka Producer Properties:
     acks=-1 or acks=all ==> Ensure data is persisted properly in leader and replicas, No data loss.
