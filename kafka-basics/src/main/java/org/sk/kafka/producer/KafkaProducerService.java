@@ -28,7 +28,7 @@ public class KafkaProducerService {
     private KafkaTemplate<String, Object> multiPartitionTopicKafkaTemplate;
 
     public void sendMessage() {
-        Message<String> message = MessageBuilder.withPayload("Publishing data")
+        Message<String> message = MessageBuilder.withPayload("Single Partition Topic")
                 .setHeader("source", "Spring")
                 .build();
         Function<Message<String>, BiFunction<SendResult<String, Object>, Throwable, Object>> processResult = msg -> (res, ex) -> {
@@ -53,7 +53,7 @@ public class KafkaProducerService {
     }
 
     private static Message<String> getMessage(int partitionId) {
-        return MessageBuilder.withPayload("It's 2024, we made it - " + partitionId)
+        return MessageBuilder.withPayload("Multi Partition Topic - " + partitionId)
                 .setHeader(KafkaHeaders.PARTITION, partitionId)
                 .setHeader("source", "Spring")
                 .build();
