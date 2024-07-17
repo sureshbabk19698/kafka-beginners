@@ -30,6 +30,13 @@ public class KafkaProducerConfig {
         return kafkaTemplate;
     }
 
+    @Bean("singleFilterPartitionTopicKafkaTemplate")
+    public KafkaTemplate<String, Object> singleFilterPartitionTopicKafkaTemplate() {
+        KafkaTemplate<String, Object> kafkaTemplate = new KafkaTemplate<>(producerFactory());
+        kafkaTemplate.setDefaultTopic(KafkaTopic.SINGLE_FILTER_PARTITION_TOPIC);
+        return kafkaTemplate;
+    }
+
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
         return new DefaultKafkaProducerFactory<>(kafkaProperties.buildProducerProperties(null));
