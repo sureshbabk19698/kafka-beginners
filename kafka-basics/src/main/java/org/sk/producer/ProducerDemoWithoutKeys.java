@@ -23,7 +23,7 @@ public class ProducerDemoWithoutKeys {
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
         for (int j = 1; j <= 3; j++) {
             for (int i = 1; i <= 2; i++) {
-                ProducerRecord<String, String> pr = new ProducerRecord<>(KafkaTopic.THIRD_TOPIC, "Its 2024, I made it." + i);
+                ProducerRecord<String, String> pr = new ProducerRecord<>(KafkaTopic.MULTI_PARTITION_TOPIC, "Its 2024, I made it." + i);
                 producer.send(pr, (RecordMetadata metadata, Exception exception) -> log.info("Partition {} ", metadata.partition()));
             }
         }

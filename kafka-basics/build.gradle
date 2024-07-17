@@ -1,22 +1,72 @@
 plugins {
     id 'java'
+    id 'war'
+    id 'org.springframework.boot' version '3.2.7'
+    id 'io.spring.dependency-management' version '1.1.5'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 group = 'org.sk'
 version = '1.0-SNAPSHOT'
+sourceCompatibility = '17'
+
+war {
+    enabled = false
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    mapstructVersion = "1.4.2.Final"
+    projectLombokVersion = "1.18.24"
+}
+
+
+sourceSets {
+    apt {
+        java {
+            srcDir 'build/generated/sources/annotationProcessor/java/main'
+        }
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
+compileJava {
+    options.compilerArgs += [
+            '-Amapstruct.defaultComponentModel=spring'
+    ]
+}
+
 dependencies {
 
     implementation 'org.apache.kafka:kafka-clients:3.6.1'
-    implementation 'org.slf4j:slf4j-api:2.0.11'
-    implementation 'org.slf4j:slf4j-simple:2.0.11'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // map-struct
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    implementation "org.projectlombok:lombok:${projectLombokVersion}"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor "org.projectlombok:lombok:${projectLombokVersion}"
 
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }

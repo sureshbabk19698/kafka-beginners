@@ -38,7 +38,7 @@ public class ConsumerDemoWithCoopertiveStickyAssignor {
         }));
 
         try {
-            consumer.subscribe(List.of(KafkaTopic.THIRD_TOPIC));
+            consumer.subscribe(List.of(KafkaTopic.MULTI_PARTITION_TOPIC));
             while (true) {
                 log.info("Polling..");
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));

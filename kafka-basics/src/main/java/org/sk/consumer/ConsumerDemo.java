@@ -21,7 +21,7 @@ public class ConsumerDemo {
         var props = KafkaConfig.setUpConsumer(args[0].split("=")[1]);
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(List.of(KafkaTopic.THIRD_TOPIC));
+        consumer.subscribe(List.of(KafkaTopic.MULTI_PARTITION_TOPIC));
 
         while (true) {
             log.info("Polling..");
