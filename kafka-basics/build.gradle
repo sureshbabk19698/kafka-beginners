@@ -51,6 +51,10 @@ compileJava {
 
 dependencies {
 
+    // db
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
+
     implementation 'org.apache.kafka:kafka-clients:3.6.1'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.kafka:spring-kafka'
@@ -64,6 +68,10 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     annotationProcessor "org.projectlombok:lombok:${projectLombokVersion}"
+
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.16.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.16.2'
 
 }
 
