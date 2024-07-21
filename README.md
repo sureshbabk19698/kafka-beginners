@@ -89,3 +89,6 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
 -----------------------------------------------------------------------
 Kafka Architecture Design :
 ![img.png](img.png)
+-----------------------------------------------------------------------
+Output of DLT design: 
+![img_1.png](img_1.png)

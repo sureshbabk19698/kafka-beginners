@@ -23,8 +23,8 @@ public class ProducerMessageLog extends BaseEntity {
     @Column(name = "CORRELATION_ID")
     private String correlationId;
 
-    @Column(name = "MSG_RECEIVED_TS")
-    private Date messageReceivedTs;
+    @Column(name = "MSG_SENT_TS")
+    private Date messagesSentTs;
 
     @Column(name = "TOPIC")
     private String topic;

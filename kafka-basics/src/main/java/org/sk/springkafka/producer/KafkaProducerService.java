@@ -16,6 +16,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -64,9 +65,10 @@ public class KafkaProducerService {
         ProducerMessageLog producerMessageLog = ProducerMessageLog.builder()
                 .correlationId((String) msg.getHeaders().get(KafkaHeaders.CORRELATION_ID))
                 .payload(msg.getPayload())
-                .partitionId((Integer) msg.getHeaders().get(KafkaHeaders.PARTITION))
+                .partitionId((Integer) msg.getHeaders().get(KafkaHeaders.RECEIVED_PARTITION))
                 .topic((String) msg.getHeaders().get(KafkaHeaders.TOPIC))
                 .errorMessage(errorMessage)
+                .messagesSentTs(new Date())
                 .processStatus(result)
                 .build();
         producerMessageLogRepository.save(producerMessageLog);
