@@ -79,3 +79,13 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
                   ---------------------------->  Consumer Group-2     -->   | Consumer 1 |  
 -----------------------------------------------------------------------
     
+## Kafka CLI commands:
+1. kafka-topics.sh --bootstrap-server localhost:9092 --list
+2. kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_name --create --partitions 3 --replication-factor 1
+3. kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_name --describe
+4. kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_name --delete
+5. kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_name --group g1 --from-beginning
+
+-----------------------------------------------------------------------
+Kafka Architecture Design :
+![img.png](img.png)
