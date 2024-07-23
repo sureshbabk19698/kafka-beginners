@@ -20,8 +20,10 @@ public class SourceDLTPartitionTopicProducerTemplate extends KafkaProducerTempla
         MessageWrapper result = new MessageWrapper();
         String jsonValue = (String) input.get(JSON_VALUE);
         result.setMessage(getMessage(jsonValue, null));
-        result.setStatus(SUCCESS);
+        sendKafkaMsg(result);
         return List.of(result);
     }
+
+
 
 }

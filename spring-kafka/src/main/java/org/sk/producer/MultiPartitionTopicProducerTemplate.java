@@ -23,7 +23,7 @@ public class MultiPartitionTopicProducerTemplate extends KafkaProducerTemplate {
             MessageWrapper result = new MessageWrapper();
             String jsonValue = (String) input.get(JSON_VALUE);
             result.setMessage(getMessage(jsonValue, i));
-            result.setStatus(SUCCESS);
+            sendKafkaMsg(result);
             messageWrappers.add(result);
         }
         return messageWrappers;
