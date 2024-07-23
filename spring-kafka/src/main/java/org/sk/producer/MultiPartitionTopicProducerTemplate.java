@@ -17,7 +17,7 @@ public class MultiPartitionTopicProducerTemplate extends KafkaProducerTemplate {
     }
 
     @Override
-    protected List<MessageWrapper> processJsonResult(Map<String, Object> input) {
+    protected void processJsonResult(Map<String, Object> input) {
         List<MessageWrapper> messageWrappers = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             MessageWrapper result = new MessageWrapper();
@@ -26,7 +26,6 @@ public class MultiPartitionTopicProducerTemplate extends KafkaProducerTemplate {
             sendKafkaMsg(result);
             messageWrappers.add(result);
         }
-        return messageWrappers;
     }
 
 }
