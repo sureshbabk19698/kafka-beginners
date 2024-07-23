@@ -24,7 +24,7 @@ public abstract class KafkaListenerService {
             process(message);
         } catch (Exception e) {
             status = "Failure";
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         } finally {
             updateConsumerMessageLog(message, status, messageHeaders);
             log.info("Processed topic {} & Partition Id {}", messageHeaders.get(KafkaHeaders.RECEIVED_TOPIC), messageHeaders.get(KafkaHeaders.RECEIVED_PARTITION));

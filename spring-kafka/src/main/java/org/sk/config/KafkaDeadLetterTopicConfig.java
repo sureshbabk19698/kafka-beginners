@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.TopicPartition;
-import org.sk.config.KafkaTopic;
 import org.sk.entity.ConsumerMessageLog;
 import org.sk.repository.ConsumerMessageLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,12 +75,12 @@ public class KafkaDeadLetterTopicConfig {
                         .partitionId(consumerRecord.partition())
                         .topic(consumerRecord.topic())
                         .errorMessage(e.getCause().getMessage())
-                        .processStatus("Failed")
+                        .processStatus("Failure")
                         .build();
                 consumerMessageLogRepository.save(consumerLog);
             } catch (JsonProcessingException ex) {
                 throw new RuntimeException(ex);
             }
-        }, new FixedBackOff(3000L, 2L));
+        }, new FixedBackOff(3000L, 1L));
     }
 }
