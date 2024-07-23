@@ -18,7 +18,7 @@ public class SingleFilterPartitionTopicProducerTemplate extends KafkaProducerTem
     protected List<MessageWrapper> processJsonResult(Map<String, Object> input) {
         MessageWrapper result = new MessageWrapper();
         String jsonValue = (String) input.get(JSON_VALUE);
-        result.setMessage(getMessage(jsonValue, null, kafkaTemplate));
+        result.setMessage(getMessage(jsonValue, null));
         result.setStatus(SUCCESS);
         return List.of(result);
     }
