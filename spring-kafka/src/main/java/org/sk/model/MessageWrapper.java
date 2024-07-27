@@ -8,7 +8,6 @@ import org.springframework.messaging.Message;
 @Setter
 public class MessageWrapper {
 
-    private String status = "FAILED";
     private Message<String> message;
 
 }

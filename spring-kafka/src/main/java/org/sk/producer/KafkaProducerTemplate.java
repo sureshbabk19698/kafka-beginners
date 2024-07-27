@@ -34,9 +34,9 @@ public abstract class KafkaProducerTemplate {
     protected final String JSON_VALUE = "JSON_VALUE";
     protected final String SOURCE = "SOURCE";
     protected final String SUCCESS = "SUCCESS";
-    protected final String FAILURE = "FAILURE";
+    protected final String FAILED = "FAILED";
     protected final Function<MessageWrapper, BiFunction<SendResult<String, Object>, Throwable, Object>> updateLog = m -> (res, ex) -> {
-        String result = "Success";
+        String result = SUCCESS;
         RecordMetadata rmd = null;
         ProducerRecord<String, Object> pr = null;
         String errorMessage = null;
@@ -46,7 +46,7 @@ public abstract class KafkaProducerTemplate {
             log.info("Topic: {}, Sent message: {}, Offset: {} ", rmd.topic(), pr.value(), rmd.offset());
         }
         if (ex != null) {
-            result = "Failed";
+            result = FAILED;
             errorMessage = ex.getMessage();
             log.info("Unable to send message={} due to : {} ", m.getMessage(), ex.getMessage());
         }
@@ -92,7 +92,6 @@ public abstract class KafkaProducerTemplate {
         CompletableFuture<SendResult<String, Object>> futureResult = null;
         try {
             futureResult = kafkaTemplate.send(result.getMessage());
-            result.setStatus(SUCCESS);
         } finally {
             assert futureResult != null;
             futureResult.handleAsync(updateLog.apply(result));
