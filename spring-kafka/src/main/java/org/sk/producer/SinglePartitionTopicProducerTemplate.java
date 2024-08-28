@@ -22,4 +22,9 @@ public class SinglePartitionTopicProducerTemplate extends KafkaProducerTemplate 
         sendKafkaMsg(result);
     }
 
+    @Override
+    public String getTopicType() {
+        return "SINGLE";
+    }
+
 }

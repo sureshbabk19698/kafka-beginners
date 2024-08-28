@@ -37,12 +37,10 @@ public abstract class KafkaProducerTemplate {
     protected final String FAILED = "FAILED";
     protected final Function<MessageWrapper, BiFunction<SendResult<String, Object>, Throwable, Object>> updateLog = m -> (res, ex) -> {
         String result = SUCCESS;
-        RecordMetadata rmd = null;
-        ProducerRecord<String, Object> pr = null;
         String errorMessage = null;
         if (res != null) {
-            rmd = res.getRecordMetadata();
-            pr = res.getProducerRecord();
+            RecordMetadata rmd = res.getRecordMetadata();
+            ProducerRecord<String, Object> pr = res.getProducerRecord();
             log.info("Topic: {}, Sent message: {}, Offset: {} ", rmd.topic(), pr.value(), rmd.offset());
         }
         if (ex != null) {
@@ -75,6 +73,8 @@ public abstract class KafkaProducerTemplate {
     }
 
     protected abstract void processJsonResult(Map<String, Object> input);
+
+    public abstract String getTopicType();
 
     protected Message<String> getMessage(String jsonValue, Integer partitionId) {
         Message<String> message = MessageBuilder.withPayload(jsonValue)

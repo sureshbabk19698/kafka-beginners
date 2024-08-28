@@ -24,4 +24,9 @@ public class MultiPartitionTopicProducerTemplate extends KafkaProducerTemplate {
         }
     }
 
+    @Override
+    public String getTopicType() {
+        return "MULTI";
+    }
+
 }

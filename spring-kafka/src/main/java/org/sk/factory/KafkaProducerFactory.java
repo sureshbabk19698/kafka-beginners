@@ -5,18 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class KafkaProducerFactory {
 
     @Autowired
     private ApplicationContext applicationContext;
+
+    @Autowired
+    private List<KafkaProducerTemplate> producerTemplates;
+
     public KafkaProducerTemplate getListener(String type) {
-        return switch (type) {
-            case "SINGLE" -> applicationContext.getBean(SinglePartitionTopicProducerTemplate.class);
-            case "FILTER" -> applicationContext.getBean(SingleFilterPartitionTopicProducerTemplate.class);
-            case "MULTI" -> applicationContext.getBean(MultiPartitionTopicProducerTemplate.class);
-            case "DLT" -> applicationContext.getBean(SourceDLTPartitionTopicProducerTemplate.class);
-            default -> throw new IllegalStateException("Unexpected value: " + type);
-        };
+        return producerTemplates.stream().filter(p -> p.getTopicType().equalsIgnoreCase(type)).findFirst()
+                .orElseThrow();
     }
+
 }

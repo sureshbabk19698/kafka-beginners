@@ -21,4 +21,9 @@ public class SingleFilterPartitionTopicProducerTemplate extends KafkaProducerTem
         sendKafkaMsg(result);
     }
 
+    @Override
+    public String getTopicType() {
+        return "FILTER";
+    }
+
 }

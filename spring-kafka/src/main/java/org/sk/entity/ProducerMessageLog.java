@@ -2,8 +2,9 @@ package org.sk.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -11,7 +12,8 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "PRODUCER_MSG_LOG")
-@Data
+@Getter
+@ToString
 @Builder
 public class ProducerMessageLog extends BaseEntity {
 

@@ -22,6 +22,9 @@ public class SourceDLTPartitionTopicProducerTemplate extends KafkaProducerTempla
         sendKafkaMsg(result);
     }
 
-
+    @Override
+    public String getTopicType() {
+        return "DLT";
+    }
 
 }
