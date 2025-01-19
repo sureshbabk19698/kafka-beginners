@@ -13,9 +13,11 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -62,6 +64,7 @@ public abstract class KafkaProducerTemplate {
         return result;
     };
 
+    @Transactional
     public void publishMessage(Map<String, Object> input) {
         try {
             String jsonValue = objectMapper.writeValueAsString(input.get(SOURCE));
@@ -85,13 +88,16 @@ public abstract class KafkaProducerTemplate {
                 .build();
     }
 
+    protected Message<String> getMessageWithKey(String jsonValue, String key) {
+        return MessageBuilder.withPayload(jsonValue)
+                .setHeader(KafkaHeaders.TOPIC, kafkaTemplate.getDefaultTopic())
+                .setHeader(KafkaHeaders.CORRELATION_ID, UUID.randomUUID().toString())
+                .setHeader(SOURCE, "Spring")
+                .setHeader(KafkaHeaders.KEY, key)
+                .build();
+    }
+
     protected void sendKafkaMsg(MessageWrapper result) {
-        CompletableFuture<SendResult<String, Object>> futureResult = null;
-        try {
-            futureResult = kafkaTemplate.send(result.getMessage());
-        } finally {
-            assert futureResult != null;
-            futureResult.handleAsync(updateLog.apply(result));
-        }
+        kafkaTemplate.send(result.getMessage()).whenComplete((success, throwable) -> updateLog.apply(result));
     }
 }

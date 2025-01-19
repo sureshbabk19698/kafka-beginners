@@ -46,6 +46,13 @@ public class KafkaProducerConfig {
         return kafkaTemplate;
     }
 
+    @Bean("sourceDltTopicTemplate")
+    public KafkaTemplate<String, Object> sourceDltTopicTemplate() {
+        KafkaTemplate<String, Object> kafkaTemplate = new KafkaTemplate<>(producerFactory("DLT"));
+        kafkaTemplate.setDefaultTopic(KafkaTopic.SOURCE_DLT_TOPIC);
+        return kafkaTemplate;
+    }
+
     @Bean("producerFactory")
     public ProducerFactory<String, Object> producerFactory(String transactionIdPrefix) {
         Map<String, Object> props = new HashMap<>();

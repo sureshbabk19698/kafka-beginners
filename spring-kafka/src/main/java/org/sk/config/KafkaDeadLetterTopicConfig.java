@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.CommonErrorHandler;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
@@ -30,12 +29,6 @@ public class KafkaDeadLetterTopicConfig {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Bean("sourceDltTopicTemplate")
-    public KafkaTemplate<String, Object> sourceDltTopicTemplate(ProducerFactory<String, Object> producerFactory) {
-        KafkaTemplate<String, Object> kafkaTemplate = new KafkaTemplate<>(producerFactory);
-        kafkaTemplate.setDefaultTopic(KafkaTopic.SOURCE_DLT_TOPIC);
-        return kafkaTemplate;
-    }
 
     @Bean("sourceDltTopicContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, String> sourceDltTopicContainerFactory(

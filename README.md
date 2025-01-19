@@ -28,6 +28,7 @@ kafka-topics.sh --bootstrap-server localhost:9092 --list
 kafka-topics.sh --bootstrap-server localhost:9092 --topic {topic_name} --create --partitions 3 --replication-factor 1
 kafka-topics.sh --bootstrap-server localhost:9092 --topic {topic_name} --describe
 kafka-topics.sh --bootstrap-server localhost:9092 --topic {topic_name} --delete
+kafka-console-producer.sh --bootstrap-server localhost:9092 --topic {topic_name} 
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic {topic_name} --group g1 --from-beginning
 ```
 
