@@ -7,18 +7,29 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
 -----------------------------------------------------------------------------
 <a href="https://www.conduktor.io/kafka/how-to-install-apache-kafka-on-windows-without-zookeeper-kraft-mode">Steps</a> to install Kafka in Windows WSL2.
 -----------------------------------------------------------------------------
+**Note:**
+1. From Kafka 3.3.1, Zookeeper is not required anymore and Kafka can be started with Kraft.
+2. Everytime after system restart, disable ipv6 in WSL2 Ubuntu using below commands, else below error will occur.
+#
+     ERROR: org.apache.kafka.clients.NetworkClient Error connecting to node broker:29092 (id: -1 rack: null) java.net.UnknownHostException: broker: Name or service not known
+     sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+     sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+
 ## Start Kafka on local machine via CLI after installation: 
     1. ~/kafka_2.13-3.6.1/bin/kafka-storage.sh random-uuid
     2. ~/kafka_2.13-3.6.1/bin/kafka-storage.sh format -t <uuid> -c ~/kafka_2.13-3.6.1/config/kraft/server.properties
     3. ~/kafka_2.13-3.6.1/bin/kafka-server-start.sh ~/kafka_2.13-3.6.1/config/kraft/server.properties
-    
-**Note:** 
-1. From Kafka 3.3.1, Zookeeper is not required anymore and Kafka can be started with Kraft.
-2. Everytime after system restart, disable ipv6 in WSL2 Ubuntu using below commands, else below error will occur.
- #
-     ERROR: org.apache.kafka.clients.NetworkClient Error connecting to node broker:29092 (id: -1 rack: null) java.net.UnknownHostException: broker: Name or service not known
-     sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
-     sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+
+-----------------------------------------------------------------------
+
+## Kafka CLI commands to create topic, produce and consume message:
+```
+kafka-topics.sh --bootstrap-server localhost:9092 --list
+kafka-topics.sh --bootstrap-server localhost:9092 --topic {topic_name} --create --partitions 3 --replication-factor 1
+kafka-topics.sh --bootstrap-server localhost:9092 --topic {topic_name} --describe
+kafka-topics.sh --bootstrap-server localhost:9092 --topic {topic_name} --delete
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic {topic_name} --group g1 --from-beginning
+```
 
 ------------------------------------------------------------------------------------------------------------------
 ## Kafka-Broker: 
@@ -55,7 +66,44 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
     3. If  max.in.flight.requests.per.connection = 5, 
        means 5 message batches are inflight, if requests are incoming, kafka will start batching based on
        linger.ms and batch.size, when exceed batch.size, automatically sends the data.
-    
+
+### transactional.id.expiration.ms and setMaxAge() properties:
+    1. If the producer remains inactive for longer than this period (default 7 days), 
+      Kafka considers the transactional ID expired
+    2. And now, if message is published, below error is observed.
+       org.apache.kafka.common.errors.ProducerFencedException: Producer attempted an operation with an expired transactional ID.
+    3. To refresh producers before expiration: factory.setMaxAge(Duration.ofDays(6));
+
+### max.poll.records and max.poll.interval.ms : consumer properties:
+    1. max.poll.records : number of records will be polled
+    2. max.poll.interval.ms : maximum interval between two consecutive polls, meaning next poll should happen withing given ms, 
+       else Kafka considers the consumer to be unresponsive and triggers a rebalance of the consumer group
+
+### Key concepts:
+      1. Each partition will have only one active consumer. 
+            If number of consumers is more present than partitions then some consumers will remain idle.
+            If number of partitions is higher than no of consumers, then some consumer will consume data from multiple partitions. (concurrency property is useful in multi-partition topic only)
+      2. Kafka maintains order over messages within a partition, not between different partitions in a topic.
+         Eg: If message m1, m2 send to partition 1 and m3 send to partition 2, then m2 might process earlier than (m1, m3), 
+            but between m1 and m3, m1 will be processed first followed by m3. 
+      3. Concurrency at @KafkaListener will work, only on topic with more than one partition - since concurrency purpose is to process data parallelly between consumers.
+         Eg: If 6 partitions is present in a topic, and 3 consumers, and if concurrency is set to 2, then each consumer process two parition data parallely as illustrated below
+                            | Partition 1 |                                
+                            | Partition 2 |                                 | Consumer 1 |  -- process assigned two partition data parallely
+            Producers -->   | Partition 3 | -->  Consumer Group-1     -->    
+                            | Partition 4 |                                 | Consumer 2 |  -- process assigned two partition data parallely
+                            | Partition 5 |                                  
+                            | Partition 6 |                                 | Consumer 3 |  -- process assigned two partition data parallely
+      4. Message with a same key will always go to same partition using mummur2 algorithm or using custom logic.
+      5. Ack mode :
+            RECORD: Each record is acknowledged immediately after processing. Best for individual message acknowledgment.
+            BATCH: Acknowledges the entire batch after processing. Suitable for batch processing. --> factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.BATCH); uses max.poll.records property default 5 seconds
+            TIME: Periodically commits offsets based on the configured interval. --> factory.getContainerProperties().setAckTime(5000L); -- // Commit offsets every 5 seconds
+            COUNT: Commits offsets after processing a specific number of records. --> factory.getContainerProperties().setAckCount(10); -- commits offsets only after 10 records
+            COUNT_TIME: Combines the COUNT and TIME modes.  
+            MANUAL: Requires explicit acknowledgment by calling Acknowledgment.acknowledge(). 
+            MANUAL_IMMEDIATE: Similar to MANUAL but commits offsets immediately without waiting for other records.
+
 ----------------------------------------------------------------------------------------------------
 ## Consumer: 
 1. Consumers are assigned partitions based on RangeAssignor, CooperativeStickyAssignor, RoundRobinAssignor, etc,
@@ -67,7 +115,7 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
             Producers -->   | Partition 3 | -->  Consumer Group-1     -->   | Consumer 3 | 
                             | Partition 4 |                                 | Consumer 4 | 
                             | Partition 5 |                                 | Consumer 5 | 
-                                                                            | Consumer 6 | --> Inactive  
+                                                                            | Consumer 6 | --> Inactive/Idle  
 3. Can have number of consumer groups and consumers as desired.
 
        Eg-2:                | Partition 1 |                                 | Consumer 1 | 
@@ -77,14 +125,13 @@ Feel free to explore the <a href="https://www.udemy.com/course/apache-kafka/?utm
                   |         | Partition 5 |                                 | Consumer 5 | 
                   |
                   ---------------------------->  Consumer Group-2     -->   | Consumer 1 |  
------------------------------------------------------------------------
-    
-## Kafka CLI commands:
-1. kafka-topics.sh --bootstrap-server localhost:9092 --list
-2. kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_name --create --partitions 3 --replication-factor 1
-3. kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_name --describe
-4. kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_name --delete
-5. kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_name --group g1 --from-beginning
+4. If number of partitions is higher than no of consumers, then some consumer will consume data from multiple partitions.
+
+       Eg-1:                | Partition 1 |                                 
+                            | Partition 2 |                                 
+            Producers -->   | Partition 3 | -->  Consumer Group-1     -->   | Consumer 1 | 
+                            | Partition 4 |                                 
+                            | Partition 5 |                                 
 
 -----------------------------------------------------------------------
 Kafka Architecture Design :

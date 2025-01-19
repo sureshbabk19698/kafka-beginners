@@ -18,6 +18,7 @@ public abstract class KafkaListenerService {
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
     protected void consume(String message, int partition, MessageHeaders messageHeaders) {
+        log.info("Partition {} is Consumed by thread {} ", partition, Thread.currentThread().getName());
         log.info("Inside topic: {} , GroupId : {} , Partition Id: {}", messageHeaders.get(KafkaHeaders.RECEIVED_TOPIC), messageHeaders.get(KafkaHeaders.GROUP_ID), messageHeaders.get(KafkaHeaders.RECEIVED_PARTITION));
         String status = "Success";
         try {

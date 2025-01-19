@@ -77,15 +77,12 @@ public abstract class KafkaProducerTemplate {
     public abstract String getTopicType();
 
     protected Message<String> getMessage(String jsonValue, Integer partitionId) {
-        Message<String> message = MessageBuilder.withPayload(jsonValue)
+        return MessageBuilder.withPayload(jsonValue)
                 .setHeader(KafkaHeaders.TOPIC, kafkaTemplate.getDefaultTopic())
                 .setHeader(KafkaHeaders.CORRELATION_ID, UUID.randomUUID().toString())
                 .setHeader(SOURCE, "Spring")
+                .setHeader(KafkaHeaders.PARTITION, partitionId)
                 .build();
-        if (Objects.nonNull(partitionId)) {
-            message.getHeaders().put(KafkaHeaders.PARTITION, partitionId);
-        }
-        return message;
     }
 
     protected void sendKafkaMsg(MessageWrapper result) {

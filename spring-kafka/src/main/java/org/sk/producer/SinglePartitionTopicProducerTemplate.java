@@ -18,7 +18,7 @@ public class SinglePartitionTopicProducerTemplate extends KafkaProducerTemplate 
     protected void processJsonResult(Map<String, Object> input) {
         MessageWrapper result = new MessageWrapper();
         String jsonValue = (String) input.get(JSON_VALUE);
-        result.setMessage(getMessage(jsonValue, null));
+        result.setMessage(getMessage(jsonValue, 0));
         sendKafkaMsg(result);
     }
 
