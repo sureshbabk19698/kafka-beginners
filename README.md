@@ -135,7 +135,7 @@ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic {topic_name}
                             | Partition 5 |                                 
 
 -----------------------------------------------------------------------
-Kafka Architecture Design :
+Kafka Implementation Design :
 ![img.png](img.png)
 -----------------------------------------------------------------------
 Output of DLT design: 
