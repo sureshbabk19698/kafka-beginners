@@ -82,11 +82,11 @@ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic {topic_name}
 
 ### Key concepts:
       1. Each partition will have only one active consumer. 
-            If number of consumers is more present than partitions then some consumers will remain idle.
+            If number of consumers is more than partitions then some consumers will remain idle.
             If number of partitions is higher than no of consumers, then some consumer will consume data from multiple partitions. (concurrency property is useful in multi-partition topic only)
       2. Kafka maintains order over messages within a partition, not between different partitions in a topic.
-         Eg: If message m1, m2 send to partition 1 and m3 send to partition 2, then m2 might process earlier than (m1, m3), 
-            but between m1 and m3, m1 will be processed first followed by m3. 
+         Eg: If message m1, m2 send to partition 1 and m3 send to partition 2, then m3 might process earlier than (m1, m2), 
+            but between m1 and m2, m1 will be processed first followed by m2. 
       3. Concurrency at @KafkaListener will work, only on topic with more than one partition - since concurrency purpose is to process data parallelly between consumers.
          Eg: If 6 partitions is present in a topic, and 3 consumers, and if concurrency is set to 2, then each consumer process two parition data parallely as illustrated below
                             | Partition 1 |                                
